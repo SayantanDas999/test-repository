@@ -20,9 +20,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = 'rivu'
 api = Api(app)
 
+db.init_app(app)
+
 @app.before_first_request
 def create_tables():
-	db.init_app(app)
     db.create_all()
     
 jwt = JWT(app, authenticate, identity) # it will go to /auth endpoint
