@@ -8,9 +8,8 @@ Created on Sat Feb  1 00:49:13 2020
 import os
 from flask import Flask
 from flask_restful import Api
-from flask_jwt import JWT
-from security import authenticate, identity
-from resources.user import UserRegister, User
+from flask_jwt_extended import JWTManager
+from resources.user import UserRegister, User, UserLogin
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from db import db
@@ -28,7 +27,7 @@ db.init_app(app)
 def create_tables():
     db.create_all()
     
-jwt = JWT(app, authenticate, identity) # it will go to /auth endpoint
+jwt = JWTManager(app)
     
 api.add_resource(Item, '/items/<string:name>')
 api.add_resource(Store, '/stores/<string:name>')
@@ -36,6 +35,7 @@ api.add_resource(ItemList, '/items')
 api.add_resource(StoreList, '/stores')
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
+api.add_resource(UserLogin, '/login')
 
 if __name__=='__main__':
     app.run()

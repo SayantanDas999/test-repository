@@ -8,6 +8,7 @@ Created on Sat Feb  1 12:44:20 2020
 from flask import request
 from flask_restful import Resource
 from models.user import UserModel
+from flask_jwt_extended import create_access_token, create_refresh_token
 
   
 class UserRegister(Resource):
@@ -32,6 +33,16 @@ class User(Resource):
             return {"message":"User not found"}, 404
         user.delete_from_db()
         return {"message":"User deleted successfully"}
+    
+class UserLogin(Resource):
+    def post(self):
+        data = request.get_json()
+        user = UserModel.find_by_username(data['username'])
+        if user and user.password == data['password']:
+            access_token = create_access_token(identity=user.id, fresh=True)
+            refresh_token = create_refresh_token(user.id)
+            return {"access_token":access_token, "refresh_token":refresh_token}
+        return {"message":"Invalid Credentials"}, 400
         
 
         
