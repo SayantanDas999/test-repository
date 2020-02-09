@@ -18,6 +18,20 @@ class UserRegister(Resource):
         user = UserModel(data['username'],data['password'])
         user.save_to_db()
         return {"message":"user created successfully"}, 201
+    
+class User(Resource):
+    def get(self,user_id):
+        user = UserModel.find_by_id(user_id)
+        if not user:
+            return {"message":"User not found"}, 404
+        return user.json()
+    
+    def delete(self,user_id):
+        user = UserModel.find_by_id(user_id)
+        if not user:
+            return {"message":"User not found"}, 404
+        user.delete_from_db()
+        return {"message":"User deleted successfully"}
         
 
         
