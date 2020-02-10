@@ -50,18 +50,12 @@ class Item(Resource):
         return item.json()       
     
 class ItemList(Resource):
-    @jwt_optional
     def get(self):
-        user_id = get_jwt_identity()
         itemlist = []
         items = ItemModel.query.all()
-        if user_id:
-            for item in items:
-                itemlist.append(item.json())
-            return {"itemlist":itemlist}
-        else:
-            for item in items:
-                itemlist.append(item.name)
-            return {"itemlist":itemlist , "message":"More details available if you log in"}
+        itemlist = [item.json() for item in items]
+        return {"itemlist":itemlist}
+
+
     
         
