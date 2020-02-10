@@ -61,7 +61,7 @@ class ItemList(Resource):
             return {"itemlist":itemlist}
         else:
             for item in items:
-                itemlist.append(item['name'])
+                itemlist.append(item.json()["name"])
             return {"itemlist":itemlist , "message":"More details available if you log in"}
     
         
