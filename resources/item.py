@@ -7,7 +7,7 @@ Created on Sun Feb  2 23:46:24 2020
 
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required, get_jwt_claims, jwt_optional, get_jwt_identity
 from models.item import ItemModel
 
 class Item(Resource):
@@ -50,11 +50,18 @@ class Item(Resource):
         return item.json()       
     
 class ItemList(Resource):
+    @jwt_optional
     def get(self):
+        user_id = get_jwt_identity()
         itemlist = []
         items = ItemModel.query.all()
-        for item in items:
-            itemlist.append(item.json())
-        return {"itemlist":itemlist}
+        if user_id:
+            for item in items:
+                itemlist.append(item.json())
+            return {"itemlist":itemlist}
+        else:
+            for item in items:
+                itemlist.append(item['name'])
+            return {"itemlist":itemlist , "message":"More details available if you log in"}
     
         
