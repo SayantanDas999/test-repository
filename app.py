@@ -28,6 +28,12 @@ def create_tables():
     db.create_all()
     
 jwt = JWTManager(app)
+
+@jwt.user_claims_loader
+def add_claims_to_jwt(identity):
+    if identity == 1:
+        return {"is admin":True}
+    return {"is admin":False}
     
 api.add_resource(Item, '/items/<string:name>')
 api.add_resource(Store, '/stores/<string:name>')
